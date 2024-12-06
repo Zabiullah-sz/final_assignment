@@ -33,23 +33,36 @@ benchmark_all_results = {
         "total_read_requests": 0,
         "total_write_requests": 0,
         "total_time": 0,
+        "total_read_time": 0,
+        "total_write_time": 0,
         "average_time": 0,
+        "average_read_time": 0,
+        "average_write_time": 0,
     },
     "random": {
         "total_requests": 0,
         "total_read_requests": 0,
         "total_write_requests": 0,
         "total_time": 0,
+        "total_read_time": 0,
+        "total_write_time": 0,
         "average_time": 0,
+        "average_read_time": 0,
+        "average_write_time": 0,
     },
     "customized": {
         "total_requests": 0,
         "total_read_requests": 0,
         "total_write_requests": 0,
         "total_time": 0,
+        "total_read_time": 0,
+        "total_write_time": 0,
         "average_time": 0,
+        "average_read_time": 0,
+        "average_write_time": 0,
     },
 }
+
 
 def save_benchmark_to_file():
     """
@@ -62,15 +75,15 @@ def save_benchmark_to_file():
             file.write(f"Total Requests: {data['total_requests']}\n")
             file.write(f"  - Total Read Requests: {data['total_read_requests']}\n")
             file.write(f"  - Total Write Requests: {data['total_write_requests']}\n")
-            file.write(f"Total Time Taken: {data['total_time']:.4f} seconds\n")
-            file.write(f"Average Time per Request: {data['average_time']:.4f} seconds\n")
-            if data['total_write_requests'] > 0:
-                avg_write_time = data['total_time'] / data['total_write_requests']
-                file.write(f"  - Average Time per Write Request: {avg_write_time:.4f} seconds\n")
-            if data['total_read_requests'] > 0:
-                avg_read_time = data['total_time'] / data['total_read_requests']
-                file.write(f"  - Average Time per Read Request: {avg_read_time:.4f} seconds\n")
+            file.write(f"Total Time Taken: {data['total_time']:.5f} seconds\n")
+            file.write(f"Average Time per Request: {data['average_time']:.5f} seconds\n")
+            if data["total_read_requests"] > 0:
+                file.write(f"  - Average Time per Read Request: {data['average_read_time']:.5f} seconds\n")
+            if data["total_write_requests"] > 0:
+                file.write(f"  - Average Time per Write Request: {data['average_write_time']:.5f} seconds\n")
             file.write("\n")
+
+
 
 def update_benchmark(mode, query_type, cluster_request_time):
     """
@@ -80,20 +93,23 @@ def update_benchmark(mode, query_type, cluster_request_time):
     data["total_requests"] += 1
     data["total_time"] += cluster_request_time
 
-    # Update specific counters
+    # Update specific counters and cumulative times
     if query_type == "read":
         data["total_read_requests"] += 1
+        data["total_read_time"] += cluster_request_time
     elif query_type == "write":
         data["total_write_requests"] += 1
+        data["total_write_time"] += cluster_request_time
 
-    # Recalculate average time
+    # Recalculate average times
     data["average_time"] = data["total_time"] / data["total_requests"]
+    if data["total_read_requests"] > 0:
+        data["average_read_time"] = data["total_read_time"] / data["total_read_requests"]
+    if data["total_write_requests"] > 0:
+        data["average_write_time"] = data["total_write_time"] / data["total_write_requests"]
 
     # Save the updated benchmark to the file
     save_benchmark_to_file()
-
-
-
 
 
 def ping_server(host):
@@ -200,10 +216,10 @@ def route_request():
     # Update benchmarking metrics
     update_benchmark(mode, query_type, cluster_request_time)
 
-    logging.info(f"Cluster {server_db['host']} request time: {cluster_request_time:.4f} seconds")
+    logging.info(f"Cluster {server_db['host']} request time: {cluster_request_time:.5f} seconds")
     return jsonify({
         "result": result,
-        "cluster_time_taken": f"{cluster_request_time:.4f} seconds"
+        "cluster_time_taken": f"{cluster_request_time:.5f} seconds"
     })
 
 if __name__ == '__main__':
