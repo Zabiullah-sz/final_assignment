@@ -26,10 +26,6 @@ WORKER_DBS = [
 # Benchmark result storage file
 BENCHMARK_FILE = "/tmp/cluster_benchmark.txt"
 
-# Caching configurations
-PING_CACHE = {}
-CACHE_EXPIRY = 5  # Cache expiry in seconds
-
 # Store benchmark results
 benchmark_all_results = {
     "direct_hit": {
@@ -95,6 +91,10 @@ def update_benchmark(mode, query_type, cluster_request_time):
 
     # Save the updated benchmark to the file
     save_benchmark_to_file()
+
+
+
+
 
 def ping_server(host):
     """

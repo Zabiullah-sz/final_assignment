@@ -88,7 +88,7 @@ def run_benchmark(gatekeeper_url):
     for mode in ["direct_hit", "random", "customized"]:
         read_data["mode"] = mode
         write_data["mode"] = mode
-        benchmark_gatekeeper(gatekeeper_url + "/validate", 50, read_data, write_data, mode)
+        benchmark_gatekeeper(gatekeeper_url + "/validate", 1000, read_data, write_data, mode)
 
     # Summarize results
     print("\nBenchmarking completed. Results logged in 'benchmarks_and_logs/end_to_end_benchmark_logs.txt'.")
