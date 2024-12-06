@@ -1,0 +1,7 @@
+boto3
+python-dotenv
+paramiko
+matplotlib
+numpy
+scp
+requests
